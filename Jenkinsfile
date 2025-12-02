@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Pull code from your GitHub repo
                 git branch: 'main', url: 'https://github.com/vaishnavivoore/exam-c6.git'
             }
         }
@@ -12,25 +11,25 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the Python app...'
-                // Install dependencies if you have requirements.txt
-                sh 'python3 -m venv venv'
-                sh './venv/bin/pip install -r requirements.txt || true'
+                // Create venv and install dependencies
+                bat 'python -m venv venv'
+                bat 'venv\\Scripts\\pip install -r requirements.txt || echo No requirements.txt'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                // Run pytest or any test framework you use
-                sh './venv/bin/python -m pytest || true'
+                // Run pytest if available
+                bat 'venv\\Scripts\\python -m pytest || echo No tests found'
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
-                // Example: run the app (adjust as needed)
-                sh 'nohup ./venv/bin/python app.py &'
+                // Run app.py in background (Windows style)
+                bat 'start /B venv\\Scripts\\python app.py'
             }
         }
     }
