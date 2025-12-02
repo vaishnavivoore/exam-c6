@@ -11,8 +11,9 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the Python app...'
-                // Create venv and install dependencies
+                // Create virtual environment
                 bat 'python -m venv venv'
+                // Install dependencies if requirements.txt exists
                 bat 'venv\\Scripts\\pip install -r requirements.txt || echo No requirements.txt'
             }
         }
@@ -28,7 +29,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
-                // Run app.py in background (Windows style)
+                // Run app.py in background
                 bat 'start /B venv\\Scripts\\python app.py'
             }
         }
