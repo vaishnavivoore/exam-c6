@@ -1,28 +1,25 @@
 pipeline {
-    agent any
+agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/vaishnavivoore/exam-c6.git'
-            }
-        }
+stages {
+stage('Clone Repository') {
+steps {
+git url: 'https://github.com/vaishnavivoore/exam-c6.git', branch: 'main'
+}
+}
 
-        stage('Build') {
-            steps {
-                echo 'Building the Python app...'
-                bat 'python -m venv venv'
-                bat 'venv\\Scripts\\pip install -r requirements.txt || echo No requirements.txt'
-            }
-        }
+stage('Build Docker Image') {
+steps {
+bat 'docker build -t registration:v1 .'
+}
+}
 
-
-    post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed.'
-        }
-    }
+stage('Run Docker Container') {
+steps {
+bat 'docker rm -f registration-container || exit 0'
+bat 'docker run -d -p 5000:5000 --name registration-container
+registration:v1'
+}
+}
+}
 }
