@@ -1,31 +1,28 @@
 pipeline {
-    agent any   // Run on any available agent
-
-    environment {
-        APP_NAME = "my-app"
-        BUILD_DIR = "build"
-    }
-
+    agent any
     stages {
-        stage('Checkout') {
+        stage('Build Docker Image') {
             steps {
-                // Pull code from Git
-                git branch: 'main', url: 'https://github.com/vaishnavivoore/exam-c6.git'
+                bat 'docker build -t registration:v1 .'
+            }
+        }
+        stage('Push to Docker Hub') {
+            steps {
+                bat 'docker tag registration:v1 vvoore1411/registration:v1'
+                bat 'docker push vvoore1411/registration:v1'
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                bat "C:/DeVops/week12/deployment.yaml"
+                bat "C:/DeVops/week12/service.yaml"
+            }
+        }
+       stage('Automated UI Test') {
+            steps {
+                bat 'python C:/DeVops/week12/test_registration.py'
             }
         }
 
-        stage('Build') {
-            steps {
-                echo "Building ${registration-form}..."
-                sh 'mvn clean package'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo "Deploying ${APP_NAME}..."
-                sh 'scp target/my-app.jar user@server:/opt/apps/'
-            }
-        }
     }
 }
