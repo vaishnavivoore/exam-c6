@@ -9,14 +9,14 @@ pipeline {
 
       stage('Build Docker Image') {
         steps {
-          bat 'docker build -t registration:v1 .'
+          bat 'docker build -t exam-c6:v1 .'
         }
       }
 
       stage('Run Docker Container') {
         steps {
-          bat 'docker rm -f registration-container || exit 0'
-          bat 'docker run -d -p 5000:5000 --name registration-container registration:v1'
+          bat 'docker rm -f exam-c6-container || exit 0'
+          bat 'docker run -d -p 5000:5000 --name exam-c6-container exam-c6:v1'
         }
       }
   }
